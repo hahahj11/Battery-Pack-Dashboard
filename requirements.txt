@@ -6,3 +6,5 @@ opencv-python-headless
 Pillow
 plotly
 tensorflow==2.13.0
+keras==2.13.1
+ultralytics
