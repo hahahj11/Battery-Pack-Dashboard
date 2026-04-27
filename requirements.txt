@@ -6,3 +6,4 @@ tensorflow
 plotly
 opencv-python-headless
 ultralytics
+scikit-learn
