@@ -4,7 +4,7 @@ import numpy as np
 import os
 import joblib
 import urllib.parse  # 🚨 한글 주소 인식을 위한 라이브러리 추가
-from tensorflow.keras.models import load_model
+# from tensorflow.keras.models import load_model
 
 # ==========================================
 # 1. 웹 페이지 및 프리미엄 테마 설정
