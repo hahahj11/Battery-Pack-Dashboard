@@ -5,6 +5,13 @@ import os
 import joblib
 import urllib.parse  # 🚨 한글 주소 인식을 위한 라이브러리 추가
 from tensorflow.keras.models import load_model
+import tensorflow as tf
+
+model = load_model(
+    "model_chg.h5",
+    compile=False,
+    safe_mode=False
+)
 
 # ==========================================
 # 1. 웹 페이지 및 프리미엄 테마 설정
