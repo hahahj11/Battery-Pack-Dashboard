@@ -3,20 +3,8 @@ import pandas as pd
 import numpy as np
 import os
 import joblib
-import urllib.parse
-import tensorflow as tf
-
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-
-@st.cache_resource
-def load_model_func():
-    model = tf.keras.models.load_model(
-        os.path.join(BASE_DIR, "model_chg.h5"),
-        compile=False
-    )
-    return model
-
-model_chg = load_model_func()
+import urllib.parse  # 한글 주소 인식을 위한 라이브러리
+from tensorflow.keras.models import load_model
 
 # ==========================================
 # 1. 웹 페이지 및 프리미엄 테마 설정
@@ -25,7 +13,14 @@ st.set_page_config(page_title="배터리팩 모니터링", layout="wide")
 
 st.markdown("""
 <style>
-    :root { --hyundai-blue: #012d74; --hyundai-light-blue: #0056b3; --danger-red: #d9534f; --safe-green: #28a745; --bg-color: #eef2f5; --card-bg: #ffffff; }
+    :root { 
+        --hyundai-blue: #012d74; 
+        --hyundai-light-blue: #0056b3; 
+        --danger-red: #d9534f; 
+        --safe-green: #28a745; 
+        --bg-color: #eef2f5; 
+        --card-bg: #ffffff; 
+    }
     .stApp { background-color: var(--bg-color); }
     h1, h2, h3, h4 { color: var(--hyundai-blue) !important; font-weight: bold !important; font-family: 'Noto Sans KR', sans-serif; }
     
@@ -42,7 +37,7 @@ st.markdown("""
 
     .section-card { background-color: var(--card-bg); padding: 20px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 25px; border: 1px solid #eaeaea; }
     
-    /* 🚀 배경 박스(흰색 영역)의 높이를 배터리 팩들이 모두 포함되도록 580px로 키움 */
+    /* 배경 박스의 높이를 배터리 팩들이 모두 포함되도록 설정 */
     .battery-section { height: 620px; display: flex; flex-direction: column; } 
     
     .section-title { font-size: 18px; color: var(--hyundai-blue); font-weight: bold; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #f0f0f0; display: flex; align-items: center; gap: 10px; }
@@ -75,7 +70,7 @@ st.markdown("""
 st.markdown("""
 <div class="main-header">
     <h1>배터리팩 모니터링</h1>
-    <span> 실시간 이상 감지 및 셀 상태 통합 관제</span>
+    <span>SPC 기반 실시간 이상 감지 및 셀 상태 통합 관제</span>
 </div>
 """, unsafe_allow_html=True)
 
@@ -189,7 +184,6 @@ ng_count = sum(1 for r in all_results if r['is_ng'])
 ok_count = total_packs - ng_count
 defect_packs = [r for r in all_results if r['is_ng']]
 worst_pack = sorted(defect_packs, key=lambda x: x['risk'], reverse=True)[0] if defect_packs else all_results[0]
-
 
 @st.cache_data(show_spinner=False)
 def get_all_early_simulations(file_list):
@@ -305,9 +299,8 @@ with col_img:
             h_chassis += f'<div class="{cel_cl}"></div>'
         h_chassis += '</div>'
         
-        # 🚀 수정된 부분: 존재하지 않는 '세부_이상탐지_온도' 대신 정상 작동하는 '세부_이상탐지' 페이지로 통합 롤백
+        # 🚀 한글 경로 처리 (pages 폴더의 1_세부_이상탐지.py로 연결)
         encoded_page_name = urllib.parse.quote("세부_이상탐지")
-        
         return f'<a href="{encoded_page_name}?pack={res["file"]}" class="pack-link" target="_self"><div class="pack-card {c_class}"><div class="pack-id">{pack_display} <span style="font-size:11px;color:gray;">{mode_label}</span></div>{h_chassis}<div class="pack-status">{t_status}</div></div></a>'
 
     results_sorted = sorted(all_results, key=lambda x: x['file'])
